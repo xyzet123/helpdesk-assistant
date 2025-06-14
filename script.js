@@ -4,12 +4,12 @@ import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_FROM_FIREBASE",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD72YArWl0qg8habc2gAru75lkc4yVOEpI",
+  authDomain: "helpdeskassitant.firebaseapp.com",
+  projectId: "helpdeskassitant",
+  storageBucket: "helpdeskassitant.firebasestorage.app"
+  messagingSenderId: "17521809534",
+  appId: "1:17521809534:web:0c33033dc6b8ee67b0a02f"
 };
 
 // Initialize Firebase
@@ -155,19 +155,7 @@ function generateAiDraft(ticketText, project) {
     return response;
 }
 
-function submitResponse() {
-    const rawPrompt = ticketDescription.value;
-    const aiDraft = aiResponse.value;
-    const userEdit = userEditedResponse.value;
-    const selectedProject = projectSelection.value;
-    
-    if (!rawPrompt || !aiDraft || !userEdit) {
-        showNotification('Please complete all fields.', true);
-        return;
-    }
-    
-    // In a real app, this would send data to your backend
-    // For this demo, we'll just store it in our local database
+
     const responseEntry = {
         rawPrompt,
         aiDraft,
