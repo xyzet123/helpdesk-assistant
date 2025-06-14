@@ -133,7 +133,7 @@ function generateResponse() {
     // Get the API key from the environment variable
     const apiKey = process.env.GEMINI_API_KEY;
     
-    fetch('https://your-vercel-project-name.vercel.app/api/generate', {
+    fetch('https://helpdesk-assistant.vercel.app/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
