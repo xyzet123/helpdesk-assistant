@@ -1,9 +1,7 @@
-```json
-     {
-       "functions": {
-         "api/generate": {
-            "runtime": "nodejs18.x"
-         }
-       }
-     }
-     ```
+{
+  "functions": {
+    "api/generate": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
