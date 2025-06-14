@@ -1,4 +1,7 @@
 ```json
+
+     "@google/generative-ai": "^0.8.0"
+
      {
        "name": "helpdesk-assistant",
        "version": "1.0.0",
