@@ -112,9 +112,10 @@ function addNewProject() {
     }
 }
 
+// --- Change this function ---
 function generateResponse() {
-    const ticketText = ticketDescription.value.trim();
-    const selectedProject = projectSelection.value;
+    const ticketText = document.getElementById('ticketDescription').value.trim();
+    const selectedProject = document.getElementById('projectSelection').value;
     
     if (!ticketText) {
         showNotification('Please enter a ticket description.', true);
@@ -122,23 +123,78 @@ function generateResponse() {
     }
     
     // Show loading animation
-    loadingAnimation.classList.remove('hidden');
-    aiResponse.value = '';
-    userEditedResponse.value = '';
+    document.getElementById('loadingAnimation').classList.remove('hidden');
+    document.getElementById('aiResponse').value = '';
+    document.getElementById('userEditedResponse').value = '';
     
     // In a real app, this would call your backend API
-    // For this demo, we'll simulate an API call with a timeout
-    setTimeout(() => {
-        // Simulate AI response generation
-        const aiDraft = generateAiDraft(ticketText, selectedProject);
-        
+    // For this demo, we'll call our Vercel function
+    
+    // Get the API key from the environment variable
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    fetch('https://your-vercel-project-name.vercel.app/api/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}` // Use the API key from Vercel
+        },
+        body: JSON.stringify({ ticket: ticketText, project: selectedProject })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
         // Hide loading animation
-        loadingAnimation.classList.add('hidden');
+        document.getElementById('loadingAnimation').classList.add('hidden');
         
         // Display the AI response
-        aiResponse.value = aiDraft;
-        userEditedResponse.value = aiDraft;
-    }, 2000);
+        document.getElementById('aiResponse').value = data.response;
+        document.getElementById('userEditedResponse').value = data.response;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('loadingAnimation').classList.add('hidden');
+        showNotification('Error generating response. Check console.', true);
+    });
+}
+// --- End of Change ---
+
+// Update the submitResponse function to send to your Vercel function too
+function submitResponse() {
+    const rawPrompt = document.getElementById('ticketDescription').value;
+    const aiDraft = document.getElementById('aiResponse').value;
+    const userEdit = document.getElementById('userEditedResponse').value;
+    const selectedProject = document.getElementById('projectSelection').value;
+    
+    if (!rawPrompt || !aiDraft || !userEdit) {
+        showNotification('Please complete all fields.', true);
+        return;
+    }
+    
+    // In a real app, this would send data to your backend
+    // For this demo, we'll just store it in our local database
+    const responseEntry = {
+        rawPrompt,
+        aiDraft,
+        userEdit,
+        project: selectedProject,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Add to database (in memory, will reset when page reloads)
+    responseDatabase.push(responseEntry);
+    
+    // Show success notification
+    showNotification('Response submitted successfully!');
+    
+    // Clear form
+    document.getElementById('ticketDescription').value = '';
+    document.getElementById('aiResponse').value = '';
+    document.getElementById('userEditedResponse').value = '';
 }
 
 function generateAiDraft(ticketText, project) {
