@@ -1,3 +1,62 @@
+// Import Firebase SDKs
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY_FROM_FIREBASE",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// --- Update this function ---
+async function submitResponse() {
+    const rawPrompt = document.getElementById('ticketDescription').value;
+    const aiDraft = document.getElementById('aiResponse').value;
+    const userEdit = document.getElementById('userEditedResponse').value;
+    const selectedProject = document.getElementById('projectSelection').value;
+    
+    if (!rawPrompt || !aiDraft || !userEdit) {
+        showNotification('Please complete all fields.', true);
+        return;
+    }
+    
+    try {
+        // Save to Firestore
+        await addDoc(collection(db, 'responses'), {
+            rawPrompt,
+            aiDraft,
+            userEdit,
+            project: selectedProject,
+            timestamp: new Date().toISOString()
+        });
+        
+        // Show success notification
+        showNotification('Response submitted successfully!');
+        
+        // Clear form
+        document.getElementById('ticketDescription').value = '';
+        document.getElementById('aiResponse').value = '';
+        document.getElementById('userEditedResponse').value = '';
+    } catch (e) {
+        console.error('Error adding document: ', e);
+        showNotification('Error saving response.', true);
+    }
+}
+// --- End of Update ---
+
+// Make sure to add the Firebase script tags to your index.html before </body>
+// <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+// <script src="path/to/your/script.js"></script>
+
 // DOM Elements
 const ticketDescription = document.getElementById('ticketDescription');
 const projectSelection = document.getElementById('projectSelection');
