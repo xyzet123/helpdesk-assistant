@@ -1,6 +1,7 @@
 // Import Firebase SDKs
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, setDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -10,10 +11,12 @@ const firebaseConfig = {
   storageBucket: "helpdeskassitant.firebasestorage.app"
   messagingSenderId: "17521809534",
   appId: "1:17521809534:web:0c33033dc6b8ee67b0a02f"
+  measurementId: "G-SF8ZC22M1B"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 // --- Update this function ---
@@ -49,6 +52,78 @@ async function submitResponse() {
         console.error('Error adding document: ', e);
         showNotification('Error saving response.', true);
     }
+}
+async function saveToHistory(ticketDesc, aiResponse, userEditedResponse, project) {
+  try {
+    const docRef = await setDoc(doc(db, "responses", Date.now().toString()), {
+      ticketDescription: ticketDesc,
+      aiResponse: aiResponse,
+      response: userEditedResponse,
+      project: project,
+      timestamp: Date.now()
+    });
+    
+    console.log("Document written with ID: ", docRef.id);
+    showNotification('Response saved successfully!');
+    
+    // Clear the form
+    ticketDescription.value = '';
+    responseCard.style.display = 'none';
+    responseEditor.value = '';
+    
+    // Update the history list
+    await updateHistoryList();
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    showNotification('Error saving response. Please try again.', 'error');
+  }
+}
+
+async function updateHistoryList() {
+  try {
+    const querySnapshot = await getDocs(query(collection(db, "responses"), orderBy("timestamp", "desc")));
+    const history = [];
+    
+    querySnapshot.forEach((doc) => {
+      history.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    // Sort by timestamp (newest first)
+    history.sort((a, b) => b.timestamp - a.timestamp);
+    
+    historyList.innerHTML = '';
+    
+    if (history.length === 0) {
+      historyList.innerHTML = '<p>No response history yet.</p>';
+      return;
+    }
+    
+    history.forEach(item => {
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item';
+      historyItem.innerHTML = `
+        <div class="history-item-header">
+          <span class="history-item-project">${item.project}</span>
+          <span class="history-item-date">${new Date(item.timestamp).toLocaleString()}</span>
+        </div>
+        <div class="form-group">
+          <label>Ticket Description</label>
+          <p>${item.ticketDescription}</p>
+        </div>
+        <div class="form-group">
+          <label>Response</label>
+          <p>${item.response}</p>
+        </div>
+      `;
+      historyList.appendChild(historyItem);
+    });
+  } catch (error) {
+    console.error("Error fetching history: ", error);
+    historyList.innerHTML = '<p>Error loading history. Please try again.</p>';
+  }
 }
 // --- End of Update ---
 
