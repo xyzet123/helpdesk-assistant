@@ -14,6 +14,9 @@
          if (!ticket || !project) {
             return res.status(400).json({ error: 'Missing required fields' });
          }
-
-         // Generate a response (this is a simple example, you might want to use the actual Gemini API)
-         const response = `Thank you for your ticket regarding ${project}.
+         res.status(200).json({ response });
+       } catch (error) {
+         console.error('Error in API function:', error);
+         res.status(500).json({ error: 'Internal server error' });
+       }
+     };
