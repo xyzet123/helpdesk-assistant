@@ -1,6 +1,6 @@
+// api/generate.js
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Initialize Gemini client with your API key
 const genAI = new GoogleGenerativeAI("AIzaSyD72YArWl0qg8habc2gAru75lkc4yVOEpI");
 
 export default async function handler(req, res) {
@@ -18,21 +18,20 @@ export default async function handler(req, res) {
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const prompt = `
-You are a helpful IT support assistant for a company working on a project called "${project}".
-A user submitted the following ticket:
+You are a helpful IT support assistant for a project called "${project}".
+A user submitted this ticket:
 
 "${ticket}"
 
-Please generate a professional and empathetic response addressing the issue and assuring them help is on the way.
-Include a closing line from the "${project} Support Team".
+Please generate a professional and empathetic response to reassure them and explain the next steps.
 `;
 
     const result = await model.generateContent(prompt);
     const response = result.response.text();
 
     return res.status(200).json({ response });
-  } catch (err) {
-    console.error("Gemini API error:", err);
-    return res.status(500).json({ error: "Failed to generate response." });
+  } catch (error) {
+    console.error("Gemini API error:", error);
+    return res.status(500).json({ error: "Gemini failed to generate content." });
   }
 }
