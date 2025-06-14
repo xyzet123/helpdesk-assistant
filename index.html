@@ -453,5 +453,26 @@
             ticketDescription.focus();
         });
     </script>
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDZucyyQQrXTAQyNe2kZMLn65S1MmQPUHQ",
+  authDomain: "helpdeskassitant.firebaseapp.com",
+  projectId: "helpdeskassitant",
+  storageBucket: "helpdeskassitant.firebasestorage.app",
+  messagingSenderId: "17521809534",
+  appId: "1:17521809534:web:0c33033dc6b8ee67b0a02f",
+  measurementId: "G-SF8ZC22M1B"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 </body>
 </html>
