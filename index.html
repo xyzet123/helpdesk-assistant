@@ -1,484 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helpdesk Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #4a6cf7;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --background-color: #f8f9fa;
-            --card-color: #ffffff;
-            --text-color: #212529;
-            --border-color: #dee2e6;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
-
-        @media (min-width: 992px) {
-            .main-content {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .card {
-            background-color: var(--card-color);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        textarea, select, input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-
-        textarea:focus, select:focus, input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
-        }
-
-        textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn:hover {
-            background-color: #3a5bd9;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-        }
-
-        .btn-success:hover {
-            background-color: #218838;
-        }
-
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .project-selection {
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
-        .project-dropdown {
-            flex: 1;
-        }
-
-        .new-project-input {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .new-project-input input {
-            flex: 1;
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--success-color);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 6px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: var(--transition);
-            z-index: 1000;
-        }
-
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .notification.error {
-            background-color: #dc3545;
-        }
-
-        .loading-animation {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 150px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Helpdesk Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="bi bi-headset"></i>
-                Helpdesk Assistant
-            </div>
-        </header>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <i class="bi bi-headset"></i>
+        Helpdesk Assistant
+      </div>
+    </header>
 
-        <div class="main-content">
-            <div class="card">
-                <h2 class="card-title"><i class="bi bi-pencil-square"></i> Ticket Input</h2>
-                <div class="form-group">
-                    <label for="ticketDescription">Ticket Description</label>
-                    <textarea id="ticketDescription" placeholder="Enter ticket description here..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Project Selection</label>
-                    <div class="project-selection">
-                        <div class="project-dropdown">
-                            <select id="projectSelection">
-                                <option value="Project Wells">Project Wells</option>
-                                <option value="Project Serene">Project Serene</option>
-                                <option value="Project Mira">Project Mira</option>
-                                <option value="add-new">+ Add New Project</option>
-                            </select>
-                        </div>
-                        <div class="new-project-input" id="newProjectContainer" style="display: none;">
-                            <input type="text" id="newProjectName" placeholder="New project name">
-                            <button class="btn btn-secondary" id="addProjectBtn">Add</button>
-                        </div>
-                    </div>
-                </div>
-
-                <button id="generateBtn" class="btn btn-block">
-                    <i class="bi bi-magic"></i> Generate Response
-                </button>
-            </div>
-
-            <div class="card">
-                <h2 class="card-title"><i class="bi bi-robot"></i> AI Draft Response</h2>
-                <div id="loadingAnimation" class="loading-animation hidden">
-                    <div class="loading"></div>
-                </div>
-                <textarea id="aiResponse" placeholder="AI response will appear here..." readonly></textarea>
-            </div>
-
-            <div class="card full-width">
-                <h2 class="card-title"><i class="bi bi-pencil"></i> Response Editor</h2>
-                <div class="form-group">
-                    <textarea id="userEditedResponse" placeholder="Edit the AI response here..."></textarea>
-                </div>
-                <button id="submitBtn" class="btn btn-success btn-block">
-                    <i class="bi bi-send"></i> Submit Response
-                </button>
-            </div>
+    <div class="main-content">
+      <div class="card">
+        <h2 class="card-title"><i class="bi bi-pencil-square"></i> Ticket Input</h2>
+        <div class="form-group">
+          <label for="ticketDescription">Ticket Description</label>
+          <textarea id="ticketDescription" placeholder="Enter ticket description here..."></textarea>
         </div>
+
+        <div class="form-group">
+          <label>Project Selection</label>
+          <div class="project-selection">
+            <div class="project-dropdown">
+              <select id="projectSelection">
+                <option value="Project Wells">Project Wells</option>
+                <option value="Project Serene">Project Serene</option>
+                <option value="Project Mira">Project Mira</option>
+                <option value="add-new">+ Add New Project</option>
+              </select>
+            </div>
+            <div class="new-project-input" id="newProjectContainer" style="display: none;">
+              <input type="text" id="newProjectName" placeholder="New project name">
+              <button class="btn btn-secondary" id="addProjectBtn">Add</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="generateBtn" class="btn btn-block">
+          <i class="bi bi-magic"></i> Generate Response
+        </button>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title"><i class="bi bi-robot"></i> AI Draft Response</h2>
+        <div id="loadingAnimation" class="loading-animation hidden">
+          <div class="loading"></div>
+        </div>
+        <textarea id="aiResponse" placeholder="AI response will appear here..." readonly></textarea>
+      </div>
+
+      <div class="card full-width">
+        <h2 class="card-title"><i class="bi bi-pencil"></i> Response Editor</h2>
+        <div class="form-group">
+          <textarea id="userEditedResponse" placeholder="Edit the AI response here..."></textarea>
+        </div>
+        <button id="submitBtn" class="btn btn-success btn-block">
+          <i class="bi bi-send"></i> Submit Response
+        </button>
+      </div>
     </div>
+  </div>
 
-    <div class="notification" id="notification">
-        <i class="bi bi-check-circle"></i>
-        <span id="notificationMessage">Response submitted successfully!</span>
-    </div>
+  <div class="notification" id="notification">
+    <i class="bi bi-check-circle"></i>
+    <span id="notificationMessage">Response submitted successfully!</span>
+  </div>
 
-    <script>
-        // DOM Elements
-        const ticketDescription = document.getElementById('ticketDescription');
-        const projectSelection = document.getElementById('projectSelection');
-        const newProjectContainer = document.getElementById('newProjectContainer');
-        const newProjectName = document.getElementById('newProjectName');
-        const addProjectBtn = document.getElementById('addProjectBtn');
-        const generateBtn = document.getElementById('generateBtn');
-        const aiResponse = document.getElementById('aiResponse');
-        const userEditedResponse = document.getElementById('userEditedResponse');
-        const submitBtn = document.getElementById('submitBtn');
-        const loadingAnimation = document.getElementById('loadingAnimation');
-        const notification = document.getElementById('notification');
-        const notificationMessage = document.getElementById('notificationMessage');
-
-        // Database to store responses (in a real app, this would be a server database)
-        let responseDatabase = [];
-
-        // Event Listeners
-        projectSelection.addEventListener('change', handleProjectSelection);
-        addProjectBtn.addEventListener('click', addNewProject);
-        generateBtn.addEventListener('click', generateResponse);
-        submitBtn.addEventListener('click', submitResponse);
-
-        // Functions
-        function handleProjectSelection() {
-            if (projectSelection.value === 'add-new') {
-                newProjectContainer.style.display = 'flex';
-                newProjectName.focus();
-            } else {
-                newProjectContainer.style.display = 'none';
-            }
-        }
-
-        function addNewProject() {
-            const projectName = newProjectName.value.trim();
-            if (projectName) {
-                // Add to dropdown
-                const option = document.createElement('option');
-                option.value = projectName;
-                option.text = projectName;
-                projectSelection.insertBefore(option, projectSelection.lastElementChild);
-                
-                // Select the new project
-                projectSelection.value = projectName;
-                
-                // Hide the new project input
-                newProjectContainer.style.display = 'none';
-                newProjectName.value = '';
-                
-                showNotification(`Project "${projectName}" added successfully!`);
-            } else {
-                showNotification('Please enter a project name.', true);
-            }
-        }
-
-        function generateResponse() {
-            const ticketText = ticketDescription.value.trim();
-            const selectedProject = projectSelection.value;
-            
-            if (!ticketText) {
-                showNotification('Please enter a ticket description.', true);
-                return;
-            }
-            
-            // Show loading animation
-            loadingAnimation.classList.remove('hidden');
-            aiResponse.value = '';
-            userEditedResponse.value = '';
-            
-            // In a real app, this would call your backend API
-            // For this demo, we'll simulate an API call with a timeout
-            setTimeout(() => {
-                // Simulate AI response generation
-                const aiDraft = generateAiDraft(ticketText, selectedProject);
-                
-                // Hide loading animation
-                loadingAnimation.classList.add('hidden');
-                
-                // Display the AI response
-                aiResponse.value = aiDraft;
-                userEditedResponse.value = aiDraft;
-            }, 2000);
-        }
-
-        function generateAiDraft(ticketText, project) {
-            // This is a mock function to simulate AI response generation
-            // In a real app, this would call your AI API
-            
-            // Generate a draft response based on the ticket and project
-            let response = `Thank you for your ticket regarding ${project}.\n\n`;
-            response += `I understand that you're experiencing: "${ticketText.substring(0, 100)}${ticketText.length > 100 ? '...' : ''}"\n\n`;
-            response += `Our team is looking into this issue and will get back to you shortly.\n\n`;
-            response += `Please check your email or this ticket for updates. If you have any urgent concerns, please reply to this message.\n\n`;
-            response += `Best regards,\n${project} Support Team`;
-            
-            return response;
-        }
-
-        function submitResponse() {
-            const rawPrompt = ticketDescription.value;
-            const aiDraft = aiResponse.value;
-            const userEdit = userEditedResponse.value;
-            const selectedProject = projectSelection.value;
-            
-            if (!rawPrompt || !aiDraft || !userEdit) {
-                showNotification('Please complete all fields.', true);
-                return;
-            }
-            
-            // In a real app, this would send data to your backend
-            // For this demo, we'll just store it in our local database
-            const responseEntry = {
-                rawPrompt,
-                aiDraft,
-                userEdit,
-                project: selectedProject,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Add to database
-            responseDatabase.push(responseEntry);
-            
-            // Show success notification
-            showNotification('Response submitted successfully!');
-            
-            // Clear form
-            ticketDescription.value = '';
-            aiResponse.value = '';
-            userEditedResponse.value = '';
-        }
-
-        function showNotification(message, isError = false) {
-            notificationMessage.textContent = message;
-            notification.classList.toggle('error', isError);
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set focus to the ticket description field
-            ticketDescription.focus();
-        });
-    </script>
-    
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDZucyyQQrXTAQyNe2kZMLn65S1MmQPUHQ",
-  authDomain: "helpdeskassitant.firebaseapp.com",
-  projectId: "helpdeskassitant",
-  storageBucket: "helpdeskassitant.firebasestorage.app",
-  messagingSenderId: "17521809534",
-  appId: "1:17521809534:web:0c33033dc6b8ee67b0a02f",
-  measurementId: "G-SF8ZC22M1B"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-<script src="path/to/your/script.js"></script>
-    
+  <!-- Use module type -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
